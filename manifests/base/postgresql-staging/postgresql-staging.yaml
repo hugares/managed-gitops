@@ -56,6 +56,8 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: gitops-postgresql-staging-postgresql
+  annotations:
+    ignore-check.kube-linter.io/no-read-only-root-fs: "Postgres is a stateful application which requires write access"
   labels:
     app.kubernetes.io/name: postgresql
     app.kubernetes.io/instance: gitops-postgresql-staging
@@ -138,6 +140,8 @@ spec:
             timeoutSeconds: 5
             successThreshold: 1
             failureThreshold: 6
+          securityContext:
+            runAsNonRoot: true
           volumeMounts:
             - name: data
               mountPath: /var/lib/pgsql/data
